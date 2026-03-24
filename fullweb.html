@@ -2,12 +2,17 @@
 <html>      
 <head>
     <title>3AMAZON - Online Store</title>
-    
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+/* Prevent horizontal overflow */
+* {
+  box-sizing: border-box;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
   margin: 0;
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #ff512f, #ff9966);
@@ -17,24 +22,27 @@ body {
 .nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap; /* allow wrapping on small screens */
+  gap: 5px;
   background: linear-gradient(to right, #ff0000, #ff7300, #ffcc00);
-  height: 70px;
-  padding: 0 10px;
+  min-height: 70px;
+  padding: 5px 10px;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  flex-wrap: wrap;
 }
 
 /* NAV LINKS */
 .nav a {
   color: white;
   text-decoration: none;
-  font-size: 16px;
-  padding: 6px 8px;
+  font-size: 14px;
+  padding: 4px 6px;
+  white-space: nowrap;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 /* ICONS */
@@ -44,13 +52,8 @@ body {
 .nav a[href="order.html"]::before { content: "📦 "; }
 .nav a[href="g-mail.html"]::before { content: "👤 "; }
 
-#reset::before { content: "♻️ "; }
-#total::before { content: "💰 "; }
-
-/* ❗ HIDE TOTAL (fix overflow on phones) */
-#total {
-  display: none;
-}
+/* hide total to prevent overflow */
+#total { display: none; }
 
 .nav a:hover {
   background: rgba(255,255,255,0.2);
@@ -59,16 +62,17 @@ body {
 
 /* LOGO */
 .amazon {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 }
 
 /* SEARCH BAR */
 .bar {
-  width: 300px;
-  padding: 12px;
+  width: 90%;
+  max-width: 300px;
+  padding: 10px;
   display: block;
-  margin: 20px auto;
+  margin: 10px auto;
   border: none;
   border-radius: 20px;
   outline: none;
@@ -141,22 +145,13 @@ body {
 }
 
 /* ADD BUTTON */
-.add-btn {
-  background: linear-gradient(to right, #ff0000, #ff9900);
-  color: white;
-  border: none;
-  padding: 10px 15px;
+.add-btn, .remove-btn {
   border-radius: 20px;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.add-btn:hover {
-  background: linear-gradient(to right, #cc0000, #ff6600);
-  transform: scale(1.05);
-}
-
-/* QUANTITY CONTROLS */
+/* QUANTITY BOX */
 .quantity-box {
   display: flex;
   justify-content: center;
@@ -175,15 +170,24 @@ body {
   font-size: 16px;
 }
 
-/* REMOVE BUTTON */
+/* ADD/REMOVE BUTTONS */
+.add-btn {
+  background: linear-gradient(to right, #ff0000, #ff9900);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+}
+
+.add-btn:hover {
+  background: linear-gradient(to right, #cc0000, #ff6600);
+  transform: scale(1.05);
+}
+
 .remove-btn {
   background: linear-gradient(to right, #444, #000);
   color: white;
   border: none;
   padding: 8px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: 0.3s;
 }
 
 .remove-btn:hover {
@@ -193,243 +197,123 @@ body {
 
 /* 📱 PHONES FIX */
 @media (max-width: 600px) {
-
-  .nav {
-    justify-content: center;
-    gap: 5px;
-    height: auto;
-    padding: 5px;
-      width:auto;
-  }
-
   .nav a {
     font-size: 12px;
-    padding: 4px 6px;
+    padding: 4px 5px;
   }
-
   .amazon {
     font-size: 16px;
   }
-
-  /* FORCE 2 PRODUCTS PER ROW */
   #products {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     padding: 10px;
   }
-
   .product-image {
     height: 120px;
   }
-
-  .product-title {
+  .product-title, .product-price {
     font-size: 14px;
   }
-
-  .product-price {
-    font-size: 14px;
-  }
-
   .qty-input {
     width: 45px;
     font-size: 14px;
   }
-
-  .remove-btn, .add-btn {
+  .add-btn, .remove-btn {
     padding: 6px 10px;
     font-size: 12px;
   }
 }
-</style><body>
-            <script src="products.js"></script>
-    <div class="nav">
-        <a href="fullweb.html" class="amazon">3AMAZON</a>
-        <a href="about-us.html">about us</a>
-        <a href="cart.html" id="cart" onclick="saveCart()">cart</a>
-        <a href="order.html">order</a>
-        <a class="e"id="total">total</a>
-        <a class="e"id="reset" onclick="resetCart();updatePrice(0);updateCart() ">reset</a>
-        <a href="g-mail.html" onclick="window.location.href='g-mail.html'">login</a>
-    </div>
-    <input class="bar"type="text" id="searchInput" placeholder="Search...">
-    <button id="delete" class="delete" >delete</button>
+</style>
+<body>
 
-    <div class="container" id="products">
+<script src="products.js"></script>
+<div class="nav">
+    <a href="fullweb.html" class="amazon">3AMAZON</a>
+    <a href="about-us.html">about us</a>
+    <a href="cart.html" id="cart" onclick="saveCart()">cart</a>
+    <a href="order.html">order</a>
+    <a class="e" id="reset" onclick="resetCart();updatePrice(0);updateCart()">reset</a>
+    <a href="g-mail.html" onclick="window.location.href='g-mail.html'">login</a>
+</div>
 
-    </div>
+<input class="bar" type="text" id="searchInput" placeholder="Search...">
+<button id="delete" class="delete">delete</button>
 
+<div class="container" id="products"></div>
 
-    <script>
+<script>
+// Render products with quantity controls
+const container = document.getElementById("products");
+const delet = document.getElementById("delete");
+let cartnum = Number(localStorage.getItem("cartnum")) || 0;
+let totalnum = Number(localStorage.getItem("totalnum")) || 0;
+let items = JSON.parse(localStorage.getItem("cartItems")) || [];
+let total = {textContent:""};
 
-  const container = document.getElementById("products");
-  const delet = document.getElementById("delete");
-
-  products.forEach(product => {
-    container.innerHTML += `
-      <div class="product-card">
-        <img src="${product.image}" class="product-image">
-
-        <h3 class="product-title">${product.name}</h3>
-        
-
-        <p class="product-description">
-          ${product.description}
-        </p>
-
-        <p class="product-price">
-          $${product.price}
-        </p>
-
-<div class="quantity-box">
-  <button class="add-btn"
-    onclick="applyQty('${product.name}', ${product.price}, 'add')">
-    Add
-  </button>
-
-  <input type="number" min="1" value="1" id="qty-${product.name}" class="qty-input">
-
-  <button class="remove-btn"
-    onclick="applyQty('${product.name}', ${product.price}, 'remove')">
-    Remove
-  </button>
-</div>  
+products.forEach(product => {
+  container.innerHTML += `
+    <div class="product-card">
+      <img src="${product.image}" class="product-image">
+      <h3 class="product-title">${product.name}</h3>
+      <p class="product-description">${product.description}</p>
+      <p class="product-price">$${product.price}</p>
+      <div class="quantity-box">
+        <button class="add-btn" onclick="applyQty('${product.name}', ${product.price}, 'add')">Add</button>
+        <input type="number" min="1" value="1" id="qty-${product.name}" class="qty-input">
+        <button class="remove-btn" onclick="applyQty('${product.name}', ${product.price}, 'remove')">Remove</button>
       </div>
-    `;
-  });
-function applyQty(name, price, action) {
-    let qtyInput = document.getElementById(`qty-${name}`);
-    let qty = Number(qtyInput.value);
-
-    if (qty <= 0) return;
-
-    let item = items.find(i => i.name === name);
-
-    if (!item && action === "add") {
-        item = { name: name, price: Number(price), quantity: 0 };
-        items.push(item);
-    }
-
-    if (item) {
-        if (action === "add") {
-            item.quantity += qty;
-            totalnum += price * qty;
-        } else if (action === "remove") {
-            item.quantity -= qty;
-            totalnum -= price * qty;
-
-            if (item.quantity <= 0) {
-                items = items.filter(i => i.name !== name);
-            }
-        }
-
-        if (totalnum < 0) totalnum = 0;
-    }
-
-    // ✅ FIX: recalculate cart number from all items
-    cartnum = items.reduce((sum, item) => sum + item.quantity, 0);
-
-    updateCart();
-    total.textContent = `total(${totalnum})`;
-    saveCart();
-}
-  // SEARCH FUNCTION
-const searchInput = document.getElementById("searchInput");
-
-searchInput.addEventListener("input", function () {
-  const searchValue = this.value.toLowerCase();
-
-  const productCards = document.querySelectorAll(".product-card");
-
-  productCards.forEach(card => {
-    const title = card.querySelector(".product-title").textContent.toLowerCase();
-    const description = card.querySelector(".product-description").textContent.toLowerCase();
-    const price = card.querySelector(".product-price").textContent.toLowerCase();
-
-    if (
-      title.includes(searchValue) ||
-      description.includes(searchValue) )
-   {
-      card.style.display = "block";
-    } else {
-      card.style.display = "none";
-    }
-    delet.addEventListener("click", function() {
-      searchInput.value = "";
-      productCards.forEach(card => {
-        card.style.display = "block";
-      });
-      });
-    });
-    return searchValue;
-  });
-
-
-
-        let cartnum =localStorage.getItem("cartnum") || 0;
-        let totalnum =Number(localStorage.getItem("totalnum") || 0);
-        let total=document.getElementById('total')
-        let cart=document.getElementById('cart');
-        let items =JSON.parse(localStorage.getItem("cartItems")) || [];
-         let quant =Number(localStorage.getItem("quantity")) || 0;
-function addItem(name, price) {
-    // Check if item already exists
-    let existingItem = items.find(item => item.name === name);
-
-    if (existingItem) {
-        existingItem.quantity += 1;  // just increment quantity
-    } else {
-        items.push({
-            name: name,
-            price: Number(price),
-            quantity: 1
-        });
-    }
-
-    cartnum += 0;
-    totalnum += Number(price);
-
-    updateCart();
-    total.textContent = `total(${totalnum})`;
-    saveCart();
-}
-function order() {
-items.forEach(item => {
-    alert(item.name);
+    </div>
+  `;
 });
-alert(totalnum); // ✅ Works
+
+function applyQty(name, price, action) {
+  let qtyInput = document.getElementById(`qty-${name}`);
+  let qty = Number(qtyInput.value);
+  if (qty <= 0) return;
+
+  let item = items.find(i => i.name === name);
+  if (!item && action === "add") {
+    item = { name: name, price: Number(price), quantity: 0 };
+    items.push(item);
+  }
+  if (item) {
+    if (action === "add") {
+      item.quantity += qty;
+      totalnum += price * qty;
+    } else if (action === "remove") {
+      item.quantity -= qty;
+      totalnum -= price * qty;
+      if (item.quantity <= 0) items = items.filter(i => i.name !== name);
+    }
+    if (totalnum < 0) totalnum = 0;
+  }
+  cartnum = items.reduce((sum, i) => sum + i.quantity, 0);
+  updateCart();
+  saveCart();
 }
 
-
-
-        function updateCart() {
-            cart.textContent = `cart(${cartnum})`;
-        }
-       function updatePrice(price) {
-        totalnum+=Number(price);
-        total.textContent = `total(${totalnum })`;
-       }
-
-                function saveCart() {
-    localStorage.setItem("cartnum", cartnum);
-    localStorage.setItem("totalnum", totalnum);
-    localStorage.setItem("quantity", quant);
-    localStorage.setItem("cartItems", JSON.stringify(items));
+function updateCart() {
+  document.getElementById("cart").textContent = `cart(${cartnum})`;
 }
-                
+
+function saveCart() {
+  localStorage.setItem("cartnum", cartnum);
+  localStorage.setItem("totalnum", totalnum);
+  localStorage.setItem("cartItems", JSON.stringify(items));
+}
+
 function resetCart() {
-    cartnum = 0;
-    searchValue = 0;
-    totalnum = 0;
-    items = [];
-    updateCart();
-    total.textContent = `total(${totalnum})`;
-    saveCart();
+  cartnum = 0;
+  totalnum = 0;
+  items = [];
+  updateCart();
+  saveCart();
 }
-window.onload = function() {
-    total.textContent = `total(${totalnum})`;
-    updateCart();
+
+window.onload = () => {
+  updateCart();
 };
-
-
-    </script></body>
+</script>
+</body>
 </html>
